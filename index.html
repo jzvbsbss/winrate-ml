@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kalkulator WINRATE HERO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://static.melee.gg/assets/heroes/fanny-aspirant-skin.jpg') no-repeat center center/cover;
+    height: 100vh;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+  }
+
+  .container {
+    background: rgba(0,0,0,0.75);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00ffe7;
+    width: 380px;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: 600;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+  }
+
+  button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px 0;
+    background: linear-gradient(45deg, #00eaff, #005bea);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 0 15px #00eaff;
+  }
+  button:hover {
+    background: linear-gradient(45deg, #005bea, #00eaff);
+    box-shadow: 0 0 25px #00eaff;
+  }
+
+  .result {
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #00ffc8;
+    text-shadow: 0 0 10px #00ffc8;
+    min-height: 40px;
+  }
+
+  footer {
+    margin-top: 40px;
+    font-size: 12px;
+    color: #ccc;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>KALKULATOR Winrate ML By (OJI STORE)</h1>
+
+    <label for="currentWR">Winrate Sekarang (%)</label>
+    <input type="number" id="currentWR" min="0" max="100" step="0.01" placeholder="Misal: 80%" />
+
+    <label for="targetWR">Target Winrate (%)</label>
+    <input type="number" id="targetWR" min="0" max="100" step="0.01" placeholder="Misal: 99%" />
+
+    <label for="totalMatches">Jumlah Pertandingan Saat Ini</label>
+    <input type="number" id="totalMatches" min="0" placeholder="Misal: 1000" />
+
+    <button onclick="calculateMatchesNeeded()">Hitung Pertandingan Menang</button>
+
+    <div class="result" id="result"></div>
+
+    <footer>© 2025 Mobile Legend Winrate Calculator By Oji Store</footer>
+  </div>
+
+<script>
+  function calculateMatchesNeeded() {
+    const currentWR = parseFloat(document.getElementById('currentWR').value);
+    const targetWR = parseFloat(document.getElementById('targetWR').value);
+    const totalMatches = parseInt(document.getElementById('totalMatches').value);
+    const resultEl = document.getElementById('result');
+
+    if (
+      isNaN(currentWR) || currentWR < 0 || currentWR > 100 ||
+      isNaN(targetWR) || targetWR <= currentWR || targetWR > 100 ||
+      isNaN(totalMatches) || totalMatches < 0
+    ) {
+      resultEl.textContent = "Input tidak valid! Pastikan:\n" +
+        "- Winrate sekarang antara 0-100\n" +
+        "- Target winrate lebih besar dari winrate sekarang dan <=100\n" +
+        "- Jumlah pertandingan >= 0";
+      return;
+    }
+
+    // Rumus:
+    // x >= (T * (T_r - W_r)) / (100 - T_r)
+    const numerator = totalMatches * (targetWR - currentWR);
+    const denominator = 100 - targetWR;
+    const matchesNeeded = numerator / denominator;
+
+    const matchesRounded = Math.ceil(matchesNeeded);
+
+    if (matchesRounded <= 0) {
+      resultEl.textContent = "Target winrate sudah tercapai atau tidak mungkin dicapai dengan input saat ini.";
+    } else {
+      resultEl.innerHTML = `Untuk mencapai target winrate <b>${targetWR}%</b>,<br>` +
+        `kamu harus menang berturut-turut sebanyak <b>${matchesRounded}</b> pertandingan tanpa kalah.`;
+    }
+  }
+</script>
+</body>
+</html>
